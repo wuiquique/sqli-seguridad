@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './App.css'
 import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
+import api from './config/api';
 
 function App() {
   const [active, setActive] = useState([true, false]);
@@ -18,6 +19,15 @@ function App() {
     let temp = [false, false]
     temp[current] = true;
     setActive(temp);
+  }
+
+  const handleInseguro = () => {
+    let post = {
+      email: inseguro.email,
+      password: inseguro.password
+    }
+
+    //llamado a api
   }
 
   return (
@@ -74,7 +84,7 @@ function App() {
           />
           <br />
           <br />
-          <Button variant='contained'>Log In</Button>
+          <Button variant='contained' onClick={handleInseguro}>Log In</Button>
         </>
       )}
       {active[1] && (
