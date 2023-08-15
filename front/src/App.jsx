@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import './App.css'
 import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
-import api from './config/api';
 
 function App() {
   const [active, setActive] = useState([true, false]);
