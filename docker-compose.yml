@@ -31,6 +31,8 @@ services:
       - "3000:3000"
     volumes:
       - ./back:/app
+    depends_on:
+      - postgres
 
 volumes:
   postgres-data:
