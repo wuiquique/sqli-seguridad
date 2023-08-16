@@ -22,6 +22,9 @@ dbClient.connect()
 const userData = [
     { name: 'Luis', email: 'luis@dummy.com', password: '12345' },
     { name: 'María', email: 'maria@dummy.com', password: '67890' },
+    { name: 'Jose', email: 'jose@dummy.com', password: 'asdfg' },
+    { name: 'Diego', email: 'diego@dummy.com', password: 'lkjhg' },
+    { name: 'Juan', email: 'juan@dummy.com', password: 'poiuy' },
 ];
 
 const saltRounds = 10;
