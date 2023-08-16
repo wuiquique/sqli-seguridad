@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
-import { Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Button, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
+import axios from 'axios';
 
 function App() {
-  const [active, setActive] = useState([true, false]);
+  const [active, setActive] = useState([true, false, false]);
   const [inseguro, setInseguro] = useState({
     email: '',
     password: '',
@@ -13,11 +14,36 @@ function App() {
     email: '',
     password: '',
   })
+  const [usuarioSeguros, setUsuarioSeguros] = useState([])
+  const [usuarioInseguros, setUsuarioInseguros] = useState([])
+  const [noTable, setNoTable] = useState(false);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/general/seguro')
+      .then((response) => {
+        setUsuarioSeguros(response.data)
+      })
+
+    axios.get('http://localhost:3000/general/inseguro')
+      .then((response) => {
+        setUsuarioInseguros(response.data)
+      })
+      .catch((error) => {
+        setNoTable(true);
+      })
+  }, [])
 
   const handleActive = (current) => {
     let temp = [false, false]
     temp[current] = true;
     setActive(temp);
+  }
+
+  const poblarInseguro = () => {
+    axios.post('http://localhost:3000/api/auth/poblar/inseguro')
+      .then((response) => {
+        window.location.href = '/';
+      })
   }
 
   const handleInseguro = () => {
@@ -26,7 +52,36 @@ function App() {
       password: inseguro.password
     }
 
-    //llamado a api
+    axios.post('http://localhost:3000/api/auth/inseguro', post)
+      .then((response) => {
+        console.log(response.data)
+      })
+  }
+
+  const poblarSeguro = () => {
+    axios.post('http://localhost:3000/api/auth/poblar/seguro')
+      .then((response) => {
+        window.location.href = '/';
+      })
+  }
+
+  const handleSeguro = () => {
+    let post = {
+      email: seguro.email,
+      password: seguro.password
+    }
+
+    axios.post('http://localhost:3000/api/authSecured/seguro', post)
+      .then((response) => {
+        console.log(response.data)
+      })
+  }
+
+  const crearTable = () => {
+    axios.post('http://localhost:3000/general/crear_tabla')
+      .then((response) => {
+        window.location.href = '/';
+      })
   }
 
   return (
@@ -35,24 +90,35 @@ function App() {
       <h2>Universidad del Istmo de Guatemala - Facultad de Ingenieria</h2>
       <h3>Luis Enrique Menendez Figueroa</h3>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
+          <Button
+            fullWidth
+            variant='contained'
+            color='success'
+            disabled={active[0]}
+            onClick={() => handleActive(0)}
+          >
+            Informacion General
+          </Button>
+        </Grid>
+        <Grid item xs={4}>
           <Button
             fullWidth
             variant='contained'
             color='secondary'
-            disabled={active[0]}
-            onClick={() => handleActive(0)}
+            disabled={active[1]}
+            onClick={() => handleActive(1)}
           >
             Inseguro
           </Button>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Button
             fullWidth
             variant='contained'
             color='primary'
-            disabled={active[1]}
-            onClick={() => handleActive(1)}
+            disabled={active[2]}
+            onClick={() => handleActive(2)}
           >
             Seguro
           </Button>
@@ -60,6 +126,87 @@ function App() {
       </Grid>
       {active[0] && (
         <>
+          <br />
+          <h4>Usuarios Inseguros</h4>
+          <br />
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Password</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {usuarioInseguros.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.username}</TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell>{item.password}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <br />
+          <br />
+          <Button
+            disabled={!noTable}
+            fullWidth variant='contained'
+            color='error'
+            onClick={crearTable}
+          >
+            Crear Tabla
+          </Button>
+          <br />
+          <br />
+          <Button
+            disabled={usuarioInseguros.length > 0 || noTable}
+            fullWidth
+            variant='contained'
+            color='warning'
+            onClick={poblarInseguro}
+          >
+            Poblar Tabla
+          </Button>
+          <br />
+          <br />
+          <br />
+          <h4>Usuarios Seguros</h4>
+          <br />
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Password</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {usuarioSeguros.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.username}</TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell>{item.password}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <br />
+          <br />
+          <Button
+            disabled={usuarioSeguros.length > 0}
+            fullWidth
+            variant='contained'
+            color='warning'
+            onClick={poblarSeguro}
+          >
+            Poblar Tabla
+          </Button>
+        </>
+      )}
+      {active[1] && (
+        <>
+          <br />
           <br />
           <TextField
             label="email"
@@ -84,9 +231,11 @@ function App() {
           <br />
           <br />
           <Button variant='contained' onClick={handleInseguro}>Log In</Button>
+          <br />
+          <br />
         </>
       )}
-      {active[1] && (
+      {active[2] && (
         <>
           <br />
           <Paper elevation={3}>
@@ -121,12 +270,13 @@ function App() {
             />
             <br />
             <br />
-            <Button variant="contained" color="primary" onClick={() => { }}>
+            <Button variant="contained" color="primary" onClick={handleSeguro}>
               Iniciar sesión
             </Button>
             <br />
             <br />
           </Paper>
+          <br />
         </>
       )}
     </>
