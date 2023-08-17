@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './App.css'
-import { Button, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Alert, Button, Grid, Paper, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import axios from 'axios';
 
@@ -17,6 +17,8 @@ function App() {
   const [usuarioSeguros, setUsuarioSeguros] = useState([])
   const [usuarioInseguros, setUsuarioInseguros] = useState([])
   const [noTable, setNoTable] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     axios.get('http://localhost:3000/general/seguro')
@@ -55,6 +57,12 @@ function App() {
     axios.post('http://localhost:3000/api/auth/inseguro', post)
       .then((response) => {
         console.log(response.data)
+        if (response.data.message === "Login successful!") {
+          setSuccess(true);
+        }
+        else {
+          setError(true);
+        }
       })
   }
 
@@ -73,7 +81,10 @@ function App() {
 
     axios.post('http://localhost:3000/api/authSecured/seguro', post)
       .then((response) => {
-        console.log(response.data)
+        setSuccess(true);
+      })
+      .catch((error) => {
+        setError(true);
       })
   }
 
@@ -84,8 +95,27 @@ function App() {
       })
   }
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSuccess(false);
+    setError(false);
+  };
+
   return (
     <>
+      <Snackbar open={success} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Login Exitoso!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          Login Fallido!
+        </Alert>
+      </Snackbar>
       <h1>SQL Injection - Seguridad</h1>
       <h2>Universidad del Istmo de Guatemala - Facultad de Ingenieria</h2>
       <h3>Luis Enrique Menendez Figueroa</h3>

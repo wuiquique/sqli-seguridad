@@ -78,7 +78,7 @@ router.post('/inseguro', async (req, res) => {
         if (result.rows.length > 0) {
             res.json({ message: 'Login successful!' });
         } else {
-            resx.json({ message: 'Invalid credentials' });
+            res.json({ message: 'Invalid credentials' });
         }
     } catch (error) {
         console.error('Error during login:', error);
