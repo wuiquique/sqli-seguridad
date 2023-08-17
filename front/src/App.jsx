@@ -64,6 +64,9 @@ function App() {
           setError(true);
         }
       })
+      .catch((error) => {
+        setError(true);
+      })
   }
 
   const poblarSeguro = () => {
@@ -268,44 +271,46 @@ function App() {
       {active[2] && (
         <>
           <br />
-          <Paper elevation={3}>
-            <br />
-            <LoginIcon />
-            <Typography variant="h5" gutterBottom>
-              Iniciar sesión
-            </Typography>
-            <TextField
-              label="Correo electrónico"
-              variant="outlined"
-              type="email"
-              value={seguro.email}
-              onChange={(ev) => {
-                let temp = { ...seguro }
-                temp.email = ev.target.value
-                setSeguro(temp)
-              }}
-            />
-            <br />
-            <br />
-            <TextField
-              label="Contraseña"
-              variant="outlined"
-              type="password"
-              value={seguro.password}
-              onChange={(ev) => {
-                let temp = { ...seguro }
-                temp.password = ev.target.value
-                setSeguro(temp)
-              }}
-            />
-            <br />
-            <br />
-            <Button variant="contained" color="primary" onClick={handleSeguro}>
-              Iniciar sesión
-            </Button>
-            <br />
-            <br />
-          </Paper>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Paper elevation={10} style={{ width: '350px' }}>
+              <br />
+              <LoginIcon />
+              <Typography variant="h5" gutterBottom>
+                Iniciar sesión
+              </Typography>
+              <TextField
+                label="Correo electrónico"
+                variant="outlined"
+                type="email"
+                value={seguro.email}
+                onChange={(ev) => {
+                  let temp = { ...seguro }
+                  temp.email = ev.target.value
+                  setSeguro(temp)
+                }}
+              />
+              <br />
+              <br />
+              <TextField
+                label="Contraseña"
+                variant="outlined"
+                type="password"
+                value={seguro.password}
+                onChange={(ev) => {
+                  let temp = { ...seguro }
+                  temp.password = ev.target.value
+                  setSeguro(temp)
+                }}
+              />
+              <br />
+              <br />
+              <Button variant="contained" color="primary" onClick={handleSeguro}>
+                Iniciar sesión
+              </Button>
+              <br />
+              <br />
+            </Paper>
+          </div>
           <br />
         </>
       )}
