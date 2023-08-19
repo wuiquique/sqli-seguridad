@@ -75,11 +75,7 @@ router.post('/inseguro', async (req, res) => {
         const query = `SELECT * FROM users_inseguro WHERE email = '${email}' AND password = '${password}'`;
         const result = await dbClient.query(query);
 
-        if (result.rows.length > 0) {
-            res.json({ message: 'Login successful!' });
-        } else {
-            res.json({ message: 'Invalid credentials' });
-        }
+        res.json(result.rows);
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ message: 'Internal server error' });

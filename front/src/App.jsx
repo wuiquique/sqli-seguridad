@@ -18,7 +18,9 @@ function App() {
   const [usuarioInseguros, setUsuarioInseguros] = useState([])
   const [noTable, setNoTable] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [successInseguro, setSuccessInseguro] = useState(false);
   const [error, setError] = useState(false);
+  const [usuario, setUsuario] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3000/general/seguro')
@@ -57,8 +59,9 @@ function App() {
     axios.post('http://localhost:3000/api/auth/inseguro', post)
       .then((response) => {
         console.log(response.data)
-        if (response.data.message === "Login successful!") {
-          setSuccess(true);
+        if (response.data.length !== 0) {
+          setSuccessInseguro(true);
+          setUsuario(response.data);
         }
         else {
           setError(true);
@@ -104,6 +107,7 @@ function App() {
     }
 
     setSuccess(false);
+    setSuccessInseguro(false);
     setError(false);
   };
 
@@ -112,6 +116,15 @@ function App() {
       <Snackbar open={success} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
           Login Exitoso!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={successInseguro} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Login Exitoso! Bienvenido {usuario.map((item, index) => (
+            <React.Fragment key={index}>
+              {item.email}
+            </React.Fragment>
+          ))}
         </Alert>
       </Snackbar>
       <Snackbar open={error} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
